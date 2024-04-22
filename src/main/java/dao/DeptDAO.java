@@ -8,6 +8,8 @@ import java.util.*;
 import vo.Dept;
 
 public class DeptDAO {
+	
+	
 	//VO 사용
 	public static ArrayList<Dept> selectDeptList() throws Exception{
 		ArrayList<Dept> list = new ArrayList<Dept>();
