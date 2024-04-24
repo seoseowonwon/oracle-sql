@@ -8,6 +8,99 @@ import java.util.*;
 import vo.Emp;
 
 public class EmpDAO {
+	// q005OrderBy.jsp
+		public static ArrayList<Emp> selectEmpListSort(
+				String col, String sort) throws Exception {
+			
+			// 매개값 디버깅
+			System.out.println(col + " <--EmpDAO.selectEmpListSort param col");
+			System.out.println(sort + " <--EmpDAO.selectEmpListSort param sort");
+			
+			ArrayList<Emp> list = new ArrayList<>();
+			Connection conn = DBHelper.getConnection();
+			
+			String sql = "SELECT empno, ename"
+					+ " FROM emp";
+			
+			if(col !=null && sort != null) {
+				sql = sql + " ORDER BY "+col+" "+sort;
+			}
+			
+			PreparedStatement stmt = conn.prepareStatement(sql);
+			System.out.println(stmt);
+			
+			ResultSet rs = stmt.executeQuery();
+			while(rs.next()) {
+				Emp e = new Emp();
+				e.setEmpno(rs.getInt("empno"));
+				e.setEname(rs.getString("ename"));
+				list.add(e);
+			}
+			
+			conn.close();
+			return list;	
+		}
+	
+	
+	
+	
+	//q004WhereIn.jsp
+	public static ArrayList<Emp> selectEmpListByGrade(ArrayList<Integer> ckList)throws Exception{
+		
+		ArrayList<Emp> list = new ArrayList<>();
+		/*
+		 *	where grade in (?, ?) 
+		 */
+		Connection conn = DBHelper.getConnection();
+		String sql = "SELECT ename, grade"
+				+ " FROM emp"
+				+ " WHERE grade IN";
+		PreparedStatement stmt = null;
+		
+		if(ckList.size() == 1) {
+			sql = sql + "(?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+		} else if (ckList.size() == 2) {
+			sql = sql + "(?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+		} else if (ckList.size() == 3) {
+			sql = sql + "(?, ?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+			stmt.setInt(3, ckList.get(2));
+		} else if (ckList.size() == 4) {
+			sql = sql + "(?, ?, ?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+			stmt.setInt(3, ckList.get(2));
+			stmt.setInt(4, ckList.get(3));
+		} else if (ckList.size() == 5) {
+			sql = sql + "(?, ?, ?, ?, ?)";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1, ckList.get(0));
+			stmt.setInt(2, ckList.get(1));
+			stmt.setInt(3, ckList.get(2));
+			stmt.setInt(4, ckList.get(3));
+			stmt.setInt(5, ckList.get(4));
+		}
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()){
+			Emp e = new Emp();
+			e.setEname(rs.getString("ename"));
+			e.setGrade(rs.getInt("grade"));
+			list.add(e);
+		}
+		
+		conn.close();
+		return list;
+	}
+	
+	
 	
 	public static ArrayList<HashMap<String, String>> selectJobCaseList () throws Exception{
 		String sql = "SELECT ename,"
