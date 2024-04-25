@@ -13,15 +13,15 @@ public class EmpDAO {
 	// q006GroupBy.jsp
 	// param : x
 	// 
-	public static ArrayList<HashMap<String, Object>> selectEmpSalStats () throws Exception {
+	public static ArrayList<HashMap<String, Integer>> selectEmpSalStats () throws Exception {
 		
-		ArrayList<HashMap<String, Object>> list 
-			= new ArrayList<HashMap<String, Object>>();
+		ArrayList<HashMap<String, Integer>> list 
+			= new ArrayList<HashMap<String, Integer>>();
 		
 		Connection conn = DBHelper.getConnection();
 		String sql = "SELECT"
 				+ " grade,"
-				+ " From COUNT(*) count,"
+				+ " COUNT(*) count,"
 				+ " SUM(sal) sum,"
 				+ " AVG(sal) avg,"
 				+ " MAX(sal) max,"
@@ -34,8 +34,8 @@ public class EmpDAO {
 		ResultSet rs = stmt.executeQuery();
 		
 		while (rs.next()) {
-			HashMap<String,Object> m = new HashMap<>();
-			m.put("grade", rs.getInt("garde"));
+			HashMap<String,Integer> m = new HashMap<>();
+			m.put("grade", rs.getInt("grade"));
 			m.put("count", rs.getInt("count"));
 			m.put("sum", rs.getInt("sum"));
 			m.put("avg", rs.getInt("avg"));
