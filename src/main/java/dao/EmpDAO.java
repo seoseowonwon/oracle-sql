@@ -8,7 +8,38 @@ import java.util.*;
 import vo.Emp;
 
 public class EmpDAO {
-	
+	// q007SelfJoin.jsp
+	public static ArrayList<HashMap<String, Object>> selectSelf () throws Exception {
+		ArrayList<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+		
+		Connection conn = DBHelper.getConnection();
+		String sql = "SELECT"
+				+ " e1.empno empNo,"
+				+ " e1.ename eName,"
+				+ " e1.grade grade,"
+				+ " NVL (e2.ename, '관리자없음') \"mgrName\","
+				+ " NVL(e2.grade,-1) \"mgrGrade\""
+				+ " FROM emp e1 LEFT OUTER JOIN emp e2"
+				+ " ON e1.mgr = e2.empno"
+				+ " ORDER BY e1.empno asc";
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		
+		while (rs.next()) {
+			HashMap<String,Object> m = new HashMap<>();
+			m.put("empNo", rs.getInt("empNo"));
+			m.put("eName", rs.getString("eName"));
+			m.put("grade", rs.getInt("grade"));
+			m.put("mgrName", rs.getString("mgrName"));
+			m.put("mgrGrade", rs.getInt("mgrGrade"));
+			
+			list.add(m);
+		}
+		
+		
+		return list;
+	}
 	
 	// q006GroupBy.jsp
 	// param : x
