@@ -8,38 +8,81 @@ import java.util.*;
 import vo.Emp;
 
 public class EmpDAO {
-	// q005OrderBy.jsp
-		public static ArrayList<Emp> selectEmpListSort(
-				String col, String sort) throws Exception {
+	
+	
+	// q006GroupBy.jsp
+	// param : x
+	// 
+	public static ArrayList<HashMap<String, Object>> selectEmpSalStats () throws Exception {
+		
+		ArrayList<HashMap<String, Object>> list 
+			= new ArrayList<HashMap<String, Object>>();
+		
+		Connection conn = DBHelper.getConnection();
+		String sql = "SELECT"
+				+ " grade,"
+				+ " From COUNT(*) count,"
+				+ " SUM(sal) sum,"
+				+ " AVG(sal) avg,"
+				+ " MAX(sal) max,"
+				+ " MIN(sal) min"
+				+ " FROM emp"
+				+ " GROUP BY grade"
+				+ " ORDER BY grade ASC";
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		ResultSet rs = stmt.executeQuery();
+		
+		while (rs.next()) {
+			HashMap<String,Object> m = new HashMap<>();
+			m.put("grade", rs.getInt("garde"));
+			m.put("count", rs.getInt("count"));
+			m.put("sum", rs.getInt("sum"));
+			m.put("avg", rs.getInt("avg"));
+			m.put("max", rs.getInt("max"));
+			m.put("min", rs.getInt("min"));
 			
-			// 매개값 디버깅
-			System.out.println(col + " <--EmpDAO.selectEmpListSort param col");
-			System.out.println(sort + " <--EmpDAO.selectEmpListSort param sort");
-			
-			ArrayList<Emp> list = new ArrayList<>();
-			Connection conn = DBHelper.getConnection();
-			
-			String sql = "SELECT empno, ename"
-					+ " FROM emp";
-			
-			if(col !=null && sort != null) {
-				sql = sql + " ORDER BY "+col+" "+sort;
-			}
-			
-			PreparedStatement stmt = conn.prepareStatement(sql);
-			System.out.println(stmt);
-			
-			ResultSet rs = stmt.executeQuery();
-			while(rs.next()) {
-				Emp e = new Emp();
-				e.setEmpno(rs.getInt("empno"));
-				e.setEname(rs.getString("ename"));
-				list.add(e);
-			}
-			
-			conn.close();
-			return list;	
+			list.add(m);
 		}
+		
+		
+		conn.close();
+		return list;
+	}
+	
+	
+	// q005OrderBy.jsp
+	public static ArrayList<Emp> selectEmpListSort(
+			String col, String sort) throws Exception {
+		
+		// 매개값 디버깅
+		System.out.println(col + " <--EmpDAO.selectEmpListSort param col");
+		System.out.println(sort + " <--EmpDAO.selectEmpListSort param sort");
+		
+		ArrayList<Emp> list = new ArrayList<>();
+		Connection conn = DBHelper.getConnection();
+		
+		String sql = "SELECT empno, ename"
+				+ " FROM emp";
+		
+		if(col !=null && sort != null) {
+			sql = sql + " ORDER BY "+col+" "+sort;
+		}
+		
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		System.out.println(stmt);
+		
+		ResultSet rs = stmt.executeQuery();
+		while(rs.next()) {
+			Emp e = new Emp();
+			e.setEmpno(rs.getInt("empno"));
+			e.setEname(rs.getString("ename"));
+			list.add(e);
+		}
+		
+		conn.close();
+		return list;	
+	}
 	
 	
 	
